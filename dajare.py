@@ -1,6 +1,8 @@
 from time import sleep
 import os
 import math
+import requests
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -13,11 +15,11 @@ options.add_argument('--headless')#バックグラウンドで
 driver = webdriver.Chrome(executable_path=driver_path, options=options)
 
 url = "https://dajare.jp/search/"
-
+res = requests.get(url)
 driver.get(url)
 sleep(1)
 
-key=['id','dajare','score']
+key=['id','dajare','author','score']
 while True:
     dajare_list=[]
     sleep(1)
@@ -26,7 +28,7 @@ while True:
         # スクロール速度をミリ秒で指定
         scroll_speed = 500
         # スクロールする
-        driver.execute_script("window.scrollBy(0, 200);", 500)
+        driver.execute_script("window.scrollBy(0, 500);", 500)
         #残スクロールの高さ
         hiddenHeight = driver.execute_script(
             "return document.documentElement.scrollHeight - document.documentElement.clientHeight;")
@@ -41,9 +43,10 @@ while True:
     trs = driver.find_elements(By.CLASS_NAME, 'ListStripe')
     for tr in trs:
         id = (tr.find_element(By.CLASS_NAME,'ListWorkNumber').text)
-        dajare = (tr.find_element(By.CLASS_NAME,'ListWorkBody').text)
-        score = (tr.find_element(By.CLASS_NAME,'ListWorkScore').text)
-        value = [id,dajare,score]
+        dajare = tr.find_element(By.CLASS_NAME,'ListWorkBody').find_element(By.TAG_NAME,'a').text
+        author = tr.find_element(By.CLASS_NAME,'ListWorkBody').find_element(By.CLASS_NAME,'LabelDefault').text
+        score = (tr.find_element(By.CLASS_NAME,'ListWorkScore').text).split(' ')[0]
+        value = [id,dajare,author,score]
         dajare_list.append(dict(zip(key,value)))
 
     df = pd.DataFrame(dajare_list)
@@ -51,6 +54,7 @@ while True:
         df.to_csv('dajare.csv',index=False,mode='a',header=False)
     else:
         df.to_csv('dajare.csv',index=False)
+
     # break#テスト用(最初の100件のみcsvにする。コメント化で全件取得に変わる)
     try:
         driver.find_element(By.CLASS_NAME,'LabelAnchorIconNext').click()
