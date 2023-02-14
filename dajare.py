@@ -1,8 +1,8 @@
 from time import sleep
 import os
 import math
-import requests
-from bs4 import BeautifulSoup
+
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -11,11 +11,11 @@ import pandas as pd
 
 driver_path = "chromedriver"
 options = Options()
-options.add_argument('--headless')#バックグラウンドで
+# options.add_argument('--headless')#バックグラウンドで
 driver = webdriver.Chrome(executable_path=driver_path, options=options)
 
 url = "https://dajare.jp/search/"
-res = requests.get(url)
+
 driver.get(url)
 sleep(1)
 
