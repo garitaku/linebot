@@ -1,4 +1,5 @@
 from random import choice
+import json
 
 import sqlite3
 from flask import Flask, request, abort
@@ -15,13 +16,15 @@ from linebot.models import (
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi(
-    'ccY8HvjSeluggPMbmzc9isMqta9BuC7cyBLpXqdo9bNNmgblqW+7gK7GoJWB3bxyEKUlyVvzRUR+AWK7DvVsaKFOvMUawGNjU0Ys363sZsF6b/TF5N+ZCCfaQNuzuijfJIwA5xnq8SEqD4vu83ND+gdB04t89/1O/w1cDnyilFU=')
-handler = WebhookHandler('37c93210c3bda52d8f164cd756def31e')
+json_file = open('api.json','r')
+json_data = json.load(json_file)
 
-# @app.route("/")
-# def test():
-#   return '<h1>OK!</h1>'
+line_bot_api = LineBotApi(json_data["LineBotApi"])
+handler = WebhookHandler(json_data["WebhookHandler"])
+
+@app.route("/")
+def test():
+  return '<h1>OK!</h1>'
 
 
 @app.route("/callback", methods=['POST'])
