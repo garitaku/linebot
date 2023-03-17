@@ -3,7 +3,7 @@
 
 LINE Messaging API SDKを使用。
 
-ダジャレ自体は「ダジャレ・ステーション」様"https://dajare.jp/"からスクレイピング(dajare.py)で取得。
+ダジャレ自体は「ダジャレ・ステーション」様 "https://dajare.jp/" からスクレイピング(dajare.py)で取得。
 
 取得結果がcsvデータになるため、それをcreate_db.pyでデータベース(sqlite)へ。
 
